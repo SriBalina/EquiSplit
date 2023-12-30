@@ -2,7 +2,6 @@
 import streamlit as st
 import pymongo
 from passlib.hash import bcrypt
-import matplotlib.pyplot as plt
 import pandas as pd
 
 

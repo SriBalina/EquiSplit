@@ -1,5 +1,5 @@
 import streamlit as st
-import matplotlib.pyplot as plt
+import pyplot as plt
 import pandas as pd
 import pymongo
 # Connect to MongoDB
