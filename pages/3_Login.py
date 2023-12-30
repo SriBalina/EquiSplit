@@ -1,9 +1,17 @@
+# app.py
 import streamlit as st
-from pymongo import MongoClient
+import pymongo
 from passlib.hash import bcrypt
+import matplotlib.pyplot as plt
+import pandas as pd
 
-# Connect to MongoDB
-client = MongoClient("mongodb+srv://lalithaveni16:lIuZaky5tXTytPN7@cluster0.3b4gvq9.mongodb.net/")
+
+mongo_username = st.secrets.secrets.mongo_username
+mongo_password = st.secrets.secrets.mongo_password
+
+# MongoDB connection URI
+mongo_uri = f"mongodb+srv://{mongo_username}:{mongo_password}@cluster0.bf0tukv.mongodb.net/test?retryWrites=true&w=majority"
+client = pymongo.MongoClient(mongo_uri)
 db = client["user_authentication"]
 collection = db["users"]
 
@@ -30,20 +38,23 @@ def main():
                 st.session_state.username = username
                 st.success("Login successful!")
                 st.write(f"Welcome, {st.session_state.username}!")
+                st.write(f"Navigate to Split page to split and record new expense")
+                st.write(f"Navigate to Visualization page to see the past expenses plot")
             else:
                 st.error("Invalid username or password.")
     else:
         st.warning("User not registered. Please register below.")
 
-    # Registration Form
-    email = st.text_input("Email:")
-    new_username = st.text_input("New Username:")
-    new_password = st.text_input("New Password:", type="password")
+        # Registration Form
+        new_username = st.text_input("New Username:")
+        new_password = st.text_input("New Password:", type="password")
 
-    # Register Button
-    if st.button("Register"):
-        register_user(email, new_username, new_password)
-        st.success("Registration successful! You can now log in.")
+        # Register Button
+        if st.button("Register"):
+            register_user(new_username, new_password)
+            st.success("Registration successful! You can now log in.")
+
+
 
 def authenticate_user(username, password):
     # Find user in the database
@@ -55,13 +66,12 @@ def authenticate_user(username, password):
     else:
         return False
 
-def register_user(email, username, password):
+def register_user( username, password):
     # Hash the password before storing it
     hashed_password = bcrypt.hash(password)
 
     # Create a new user document
     new_user = {
-        "email": email,
         "username": username,
         "password_hash": hashed_password
     }
