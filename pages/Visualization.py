@@ -1,9 +1,14 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 import pandas as pd
-from pymongo import MongoClient
+import pymongo
 # Connect to MongoDB
-client = MongoClient("mongodb+srv://lalithaveni16:lIuZaky5tXTytPN7@cluster0.3b4gvq9.mongodb.net/")
+mongo_username = st.secrets.secrets.mongo_username
+mongo_password = st.secrets.secrets.mongo_password
+
+# MongoDB connection URI
+mongo_uri = f"mongodb+srv://{mongo_username}:{mongo_password}@cluster0.bf0tukv.mongodb.net/test?retryWrites=true&w=majority"
+client = pymongo.MongoClient(mongo_uri)
 db = client["user_authentication"]
 balances_collection = db["balances"]
 
@@ -16,6 +21,7 @@ def fetch_user_balances(username):
 
     if user_data:
         transactions = user_data.get("transactions", [])
+        print(transactions)
         for group_data in transactions:
             group_name = group_data["group_name"]
             balances = group_data.get("transactions", [])
