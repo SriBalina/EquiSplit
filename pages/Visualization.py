@@ -1,5 +1,5 @@
 import streamlit as st
-import pyplot as plt
+import plotly.express as plt
 import pandas as pd
 import pymongo
 # Connect to MongoDB
@@ -36,9 +36,12 @@ def main():
 
     # Retrieve username from the session state
     username = st.session_state.get("username", "")
-
+    if username:
+        st.write(f"Welcome, {username}!")
+    else:
+        st.write(f"Login to Fetch")
     # Display username
-    st.write(f"Welcome, {username}!")
+    
 
     # Fetch and visualize expense balances for the current user
     if st.button("Fetch Expense Balances"):
@@ -53,12 +56,15 @@ def main():
                     # Plotting using Matplotlib for each group
                     
                     df = pd.DataFrame(balances, columns=["Payer", "Payee", "Amount"])
-                    plt.figure(figsize=(8, 6))
-                    labels = [f"{row['Payer']}\n({row['Payee']})" for index, row in df.iterrows()]
+                    # Create labels for the pie chart
+                    df["Labels"] = [f"{row['Payer']} ({row['Payee']})" for _, row in df.iterrows()]
 
-                    plt.pie(df["Amount"], labels=labels, autopct="%1.1f%%", startangle=140)
-                    plt.title(f"Expense Balances - {group_name}")
-                    st.pyplot(plt)
+                    # Create a pie chart using plotly.express
+                    fig = plt.pie(df, values="Amount", names="Labels", title=f"Expense Balances - {group_name}", 
+                                template="plotly", hole=0.4)
+
+                    # Show the plot using Streamlit
+                    st.plotly_chart(fig)
                 else:
                     st.warning(f"No expenses found for group: {group_name}")
                     
