@@ -2,12 +2,8 @@ import streamlit as st
 from langchain.llms import OpenAI
 
 
-st.set_page_config(
-    page_title="Chat",
-    layout="wide",
-)
-st.title('Chat with me')
-openai_api_key = st.text_input('OpenAI API Key')
+st.title('Confused or Bored - Chat with me')
+openai_api_key = st.text_input('Enter OpenAI API Key')
 
 def generate_response(input_text):
   llm = OpenAI(temperature=0.7, openai_api_key=openai_api_key)
