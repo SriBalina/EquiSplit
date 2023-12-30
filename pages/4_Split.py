@@ -52,7 +52,7 @@ def splitwise_calculator(group):
                 balances[consumer] += amount_paid / len(consumers)
                 transactions.append((consumer, payer, amount_paid / len(consumers)))
     print(transactions)
-    
+    transactions=simplify_transactions(transactions)
     return transactions
 
 
